@@ -13,7 +13,7 @@ public class FallbackHost implements IHost {
 
     @Override
     public boolean match(String requestUri) {
-        return false;
+        return true;
     }
 
     @Override

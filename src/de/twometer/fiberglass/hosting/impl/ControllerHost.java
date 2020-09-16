@@ -23,7 +23,7 @@ public class ControllerHost<T extends Controller> implements IHost {
 
     @Override
     public boolean match(String requestUri) {
-        return false;
+        return controller.getRouteMatcher().matches(requestUri);
     }
 
     @Override
