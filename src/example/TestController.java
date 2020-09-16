@@ -8,8 +8,15 @@ import de.twometer.fiberglass.response.IResponse;
 @Route("~/edit/{id}")
 public class TestController extends Controller {
 
+    private final DatabaseService databaseService;
+
+    public TestController(DatabaseService databaseService) {
+        this.databaseService = databaseService;
+    }
+
     @Get
     public IResponse get(String id) {
+        databaseService.test();
         return null;
     }
 
