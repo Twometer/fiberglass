@@ -2,13 +2,16 @@ package de.twometer.fiberglass.hosting;
 
 import de.twometer.fiberglass.di.InstanceProvider;
 import de.twometer.fiberglass.hosting.base.IHost;
+import de.twometer.fiberglass.request.IRequest;
+import de.twometer.fiberglass.response.IResponse;
+import de.twometer.fiberglass.server.HttpCallback;
 import de.twometer.fiberglass.server.HttpConfig;
 import de.twometer.fiberglass.server.HttpServer;
 
 import java.io.IOException;
 import java.util.List;
 
-public class HostManager {
+public class HostManager implements HttpCallback {
 
     private final List<IHost> hosts;
 
@@ -30,6 +33,7 @@ public class HostManager {
 
         try {
             httpServer = new HttpServer(httpConfig);
+            httpServer.setCallback(this);
             httpServer.start();
         } catch (IOException e) {
             throw new RuntimeException("Failed to start host manager", e);
@@ -44,4 +48,8 @@ public class HostManager {
         }
     }
 
+    @Override
+    public IResponse handleRequest(IRequest request) {
+        return null;
+    }
 }
