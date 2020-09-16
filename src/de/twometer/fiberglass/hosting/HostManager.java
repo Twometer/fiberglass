@@ -5,6 +5,7 @@ import de.twometer.fiberglass.hosting.base.IHost;
 import de.twometer.fiberglass.server.HttpConfig;
 import de.twometer.fiberglass.server.HttpServer;
 
+import java.io.IOException;
 import java.util.List;
 
 public class HostManager {
@@ -27,12 +28,20 @@ public class HostManager {
         for (var host : hosts)
             host.initialize(instanceProvider);
 
-        httpServer = new HttpServer(httpConfig);
-        httpServer.start();
+        try {
+            httpServer = new HttpServer(httpConfig);
+            httpServer.start();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to start host manager", e);
+        }
     }
 
     public void stop() {
-        httpServer.stop();
+        try {
+            httpServer.stop();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to stop host manager", e);
+        }
     }
 
 }
