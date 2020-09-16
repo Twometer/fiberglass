@@ -9,6 +9,8 @@ public class TestApp {
 
         fiberglass.addService(DatabaseService.class);
 
+        fiberglass.addController(TestController.class);
+
         fiberglass.addStaticFiles();
 
         fiberglass.start();
