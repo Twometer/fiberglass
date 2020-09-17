@@ -46,7 +46,10 @@ public class StaticFileProvider {
             while ((read = in.read(buffer)) > 0)
                 stream.write(buffer, 0, read);
 
-            return new StaticFile(MimeType.getMimeType(resourcePath), stream.toByteArray());
+            var lastSlashIndex = resourcePath.lastIndexOf("/");
+            var fileName = lastSlashIndex != -1 ? resourcePath.substring(lastSlashIndex + 1) : resourcePath;
+
+            return new StaticFile(resourcePath, fileName, MimeType.getMimeType(resourcePath), stream.toByteArray());
         }
     }
 

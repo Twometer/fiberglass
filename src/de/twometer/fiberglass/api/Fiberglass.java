@@ -8,6 +8,7 @@ import de.twometer.fiberglass.hosting.impl.ControllerHost;
 import de.twometer.fiberglass.hosting.impl.FallbackHost;
 import de.twometer.fiberglass.hosting.impl.StaticFileHost;
 import de.twometer.fiberglass.hosting.impl.StaticFileProvider;
+import de.twometer.fiberglass.photon.PhotonPageService;
 import de.twometer.fiberglass.server.HttpConfig;
 
 import java.io.IOException;
@@ -41,6 +42,10 @@ public class Fiberglass {
         fileProvider.scan();
         hosts.add(new StaticFileHost(fileProvider));
         serviceProvider.registerServiceInstance(fileProvider);
+    }
+
+    public void addPhotonPages() {
+        serviceProvider.registerService(PhotonPageService.class);
     }
 
     public HttpConfig getHttpConfig() {

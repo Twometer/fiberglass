@@ -8,18 +8,22 @@ import de.twometer.fiberglass.api.annotation.Route;
 import de.twometer.fiberglass.hosting.impl.StaticFileProvider;
 import de.twometer.fiberglass.http.Method;
 import de.twometer.fiberglass.http.StatusCode;
+import de.twometer.fiberglass.photon.PhotonPageService;
 import de.twometer.fiberglass.response.IResponse;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 @Route("/book/{id}")
 public class TestController extends Controller {
+
+    private final PhotonPageService photon;
 
     private final StaticFileProvider fileProvider;
 
     private final DatabaseService databaseService;
 
-    public TestController(StaticFileProvider fileProvider, DatabaseService databaseService) {
+    public TestController(PhotonPageService photon, StaticFileProvider fileProvider, DatabaseService databaseService) {
+        this.photon = photon;
         this.fileProvider = fileProvider;
         this.databaseService = databaseService;
     }
@@ -37,8 +41,10 @@ public class TestController extends Controller {
     }
 
     @Http(Method.GET)
-    public IResponse testEndpoint(@Param("id") String id) throws FileNotFoundException {
-        return file(fileProvider.getFile("/index.html"));
+    public IResponse testEndpoint(@Param("id") String id) throws IOException {
+        var model = new ExampleViewModel();
+        model.current_id = id;
+        return photon.render(fileProvider.getFile("/index.html"), model);
     }
 
     @Http(Method.GET)

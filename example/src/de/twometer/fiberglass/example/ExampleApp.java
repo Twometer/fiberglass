@@ -11,6 +11,7 @@ public class ExampleApp {
         app.addController(TestController.class);
         app.addService(DatabaseService.class);
         app.addStaticFiles("web", ExampleApp.class);
+        app.addPhotonPages();
         app.start();
     }
 

@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="org.jooq:joor:0.9.13" type="repository">
+    <properties maven-id="org.jooq:joor:0.9.13" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jooq/joor/0.9.13/joor-0.9.13.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
