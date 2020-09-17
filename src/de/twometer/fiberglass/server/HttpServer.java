@@ -65,6 +65,7 @@ public class HttpServer {
             response.write(outputStream);
 
             outputStream.flush();
+            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
