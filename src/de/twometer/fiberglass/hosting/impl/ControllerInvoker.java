@@ -7,6 +7,7 @@ import de.twometer.fiberglass.api.annotation.Param;
 import de.twometer.fiberglass.http.StatusCode;
 import de.twometer.fiberglass.response.ErrorResponse;
 import de.twometer.fiberglass.response.IResponse;
+import de.twometer.fiberglass.response.ResponseFactory;
 import de.twometer.fiberglass.routing.ParsedRequestRoute;
 import de.twometer.fiberglass.util.TypeConverter;
 
@@ -40,15 +41,21 @@ public class ControllerInvoker {
 
             if (methodMatches(context, isIndex, method)) {
                 var parameters = prepareParameters(context, method);
-                try {
-                    return (IResponse) method.invoke(controller, parameters);
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
+                return invokeControllerMethod(method, parameters);
             }
         }
 
         return new ErrorResponse(StatusCode.NotFound);
+    }
+
+    private IResponse invokeControllerMethod(Method method, Object[] parameters) {
+        try {
+            return (IResponse) method.invoke(controller, parameters);
+        } catch (InvocationTargetException e) {
+            return ResponseFactory.newInternalServerError(e.getTargetException());
+        } catch (IllegalAccessException e) {
+            return ResponseFactory.newInternalServerError(e);
+        }
     }
 
     private Object[] prepareParameters(ControllerRequestContext context, Method method) {

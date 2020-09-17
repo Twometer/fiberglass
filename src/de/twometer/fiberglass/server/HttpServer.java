@@ -4,10 +4,9 @@ import de.twometer.fiberglass.http.StatusCode;
 import de.twometer.fiberglass.request.HttpRequest;
 import de.twometer.fiberglass.response.ErrorResponse;
 import de.twometer.fiberglass.response.IResponse;
+import de.twometer.fiberglass.response.ResponseFactory;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
@@ -74,10 +73,10 @@ public class HttpServer {
     private IResponse getSafeResponse(HttpRequest request) {
         try {
             return callback.handleRequest(request);
+        } catch (NumberFormatException e) {
+            return new ErrorResponse(StatusCode.BadRequest, e.getMessage());
         } catch (Throwable t) {
-            StringWriter writer = new StringWriter();
-            t.printStackTrace(new PrintWriter(writer));
-            return new ErrorResponse(StatusCode.InternalServerError, writer.toString());
+            return ResponseFactory.newInternalServerError(t);
         }
     }
 

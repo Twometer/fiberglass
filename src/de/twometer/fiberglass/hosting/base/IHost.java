@@ -10,8 +10,8 @@ public interface IHost {
 
     void initialize(InstanceProvider instanceProvider) throws IOException;
 
-    boolean match(String requestUri);
+    boolean match(String requestUri) throws IOException;
 
-    IResponse serve(HttpRequest request);
+    IResponse serve(HttpRequest request) throws IOException;
 
 }

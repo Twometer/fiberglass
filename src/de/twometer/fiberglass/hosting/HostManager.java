@@ -45,7 +45,7 @@ public class HostManager implements HttpCallback {
     }
 
     @Override
-    public IResponse handleRequest(HttpRequest request) {
+    public IResponse handleRequest(HttpRequest request) throws IOException {
         for (var host : hosts) {
             if (host.match(request.getRequestUri()))
                 return host.serve(request);

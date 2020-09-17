@@ -91,7 +91,10 @@ public class StaticFileProvider {
         }
     }
 
-    public Map<String, StaticFile> getFileMap() {
-        return fileMap;
+    public StaticFile getFile(String path) throws FileNotFoundException {
+        if (!fileMap.containsKey(path))
+            throw new FileNotFoundException(path);
+        return fileMap.get(path);
     }
+
 }
