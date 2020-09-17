@@ -28,6 +28,9 @@ public class ControllerHost<T extends Controller> implements IHost {
 
     @Override
     public IResponse serve(HttpRequest request) {
+        var pathParams = controller.getRouteMatcher().getPathParameters(request.getRequestUri());
+
+
         return null;
     }
 }

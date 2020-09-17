@@ -6,7 +6,7 @@ import de.twometer.fiberglass.api.annotation.http.Get;
 import de.twometer.fiberglass.response.HttpTextResponse;
 import de.twometer.fiberglass.response.IResponse;
 
-@Route("~/edit/{id}")
+@Route("/edit/{id}")
 public class TestController extends Controller {
 
     private final DatabaseService databaseService;

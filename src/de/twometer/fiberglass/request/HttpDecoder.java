@@ -3,6 +3,7 @@ package de.twometer.fiberglass.request;
 import de.twometer.fiberglass.http.Cookie;
 import de.twometer.fiberglass.http.Header;
 import de.twometer.fiberglass.http.Method;
+import de.twometer.fiberglass.util.StringUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,7 +42,7 @@ public class HttpDecoder {
     }
 
     private void parseHead(String line) throws IOException {
-        var parts = line.split(" ");
+        var parts = StringUtil.split(line, ' ');
 
         var optionalMethod = Arrays.stream(Method.values())
                 .filter(c -> c.name().equalsIgnoreCase(parts[0]))
@@ -50,7 +51,29 @@ public class HttpDecoder {
             throw new IOException("Invalid request method");
         }
         request.setMethod(optionalMethod.get());
-        request.setRequestUri(parts[1]);
+        parseRequestUri(parts[1]);
+    }
+
+    private void parseRequestUri(String uri) {
+        var idx = uri.indexOf('?');
+        if (idx >= 0) {
+            request.setRequestUri(uri.substring(0, idx));
+
+            var query = uri.substring(idx + 1);
+            var items = StringUtil.split(query, '&', true);
+            for (var item : items) {
+                var separatorIdx = item.indexOf('=');
+                if (separatorIdx < 0)
+                    request.addQueryParameter(item, "");
+                else {
+                    var key = item.substring(0, separatorIdx);
+                    var val = item.substring(separatorIdx + 1);
+                    request.addQueryParameter(StringUtil.urlDecode(key), StringUtil.urlDecode(val));
+                }
+            }
+        } else {
+            request.setRequestUri(uri);
+        }
     }
 
     private void parseRequestHeader(String line) {
@@ -59,7 +82,7 @@ public class HttpDecoder {
 
         if (key.equalsIgnoreCase("cookie")) {
             if (val.contains(":")) {
-                var cookies = val.split(";");
+                var cookies = StringUtil.split(val, ';');
                 for (var cookie : cookies)
                     parseCookie(cookie);
             } else {

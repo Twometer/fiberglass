@@ -6,9 +6,7 @@ import de.twometer.fiberglass.http.Method;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -16,6 +14,7 @@ public class HttpRequest {
 
     private final List<Header> headers = new ArrayList<>();
     private final List<Cookie> cookies = new ArrayList<>();
+    private final Map<String, String> query = new HashMap<>();
     private Method method;
     private String requestUri;
     private byte[] body;
@@ -51,6 +50,14 @@ public class HttpRequest {
 
     void setRequestUri(String requestUri) {
         this.requestUri = requestUri;
+    }
+
+    void addQueryParameter(String key, String value) {
+        query.put(key, value);
+    }
+
+    public Map<String, String> getQuery() {
+        return query;
     }
 
     public List<Header> getHeaders() {
