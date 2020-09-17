@@ -43,9 +43,9 @@ public class StaticFileHost implements IHost {
 
     private StaticFile findFile(String path) throws FileNotFoundException {
         String fileWithIndex = path + (path.endsWith("/") ? "" : '/') + "index.html";
-        var file = fileProvider.getFile(path);
+        var file = fileProvider.getFileMap().get(path);
         if (file == null)
-            file = fileProvider.getFile(fileWithIndex);
+            file = fileProvider.getFileMap().get(fileWithIndex);
         return file;
     }
 

@@ -57,4 +57,7 @@ public class StaticFileProvider {
         return fileMap.get(path);
     }
 
+    public Map<String, StaticFile> getFileMap() {
+        return fileMap;
+    }
 }
