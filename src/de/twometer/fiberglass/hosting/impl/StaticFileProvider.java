@@ -1,5 +1,7 @@
 package de.twometer.fiberglass.hosting.impl;
 
+import de.twometer.fiberglass.http.MimeType;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,52 +46,10 @@ public class StaticFileProvider {
             while ((read = in.read(buffer)) > 0)
                 stream.write(buffer, 0, read);
 
-            return new StaticFile(getMimeType(resourcePath), stream.toByteArray());
+            return new StaticFile(MimeType.getMimeType(resourcePath), stream.toByteArray());
         }
     }
 
-    private String getMimeType(String filename) {
-        var ext = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
-        switch (ext) {
-            case "css":
-                return "text/css";
-            case "txt":
-                return "text/plain";
-            case "html":
-                return "text/html";
-            case "js":
-                return "text/javascript";
-            case "json":
-                return "application/json";
-            case "png":
-                return "image/png";
-            case "jfif":
-            case "pjpeg":
-            case "pjp":
-            case "jpeg":
-            case "jpg":
-                return "image/jpeg";
-            case "webp":
-                return "image/webp";
-            case "svg":
-                return "image/svg+xml";
-            case "cur":
-            case "ico":
-                return "image/x-icon";
-            case "bmp":
-                return "image/bmp";
-            case "gif":
-                return "image/gif";
-            case "wav":
-                return "audio/wave";
-            case "ogg":
-                return "audio/ogg";
-            case "webm":
-                return "video/webm";
-            default:
-                return "application/octet-stream";
-        }
-    }
 
     public StaticFile getFile(String path) throws FileNotFoundException {
         if (!fileMap.containsKey(path))

@@ -2,10 +2,7 @@ package de.twometer.fiberglass.api;
 
 import de.twometer.fiberglass.hosting.impl.StaticFile;
 import de.twometer.fiberglass.http.StatusCode;
-import de.twometer.fiberglass.response.ErrorResponse;
-import de.twometer.fiberglass.response.HttpResponse;
-import de.twometer.fiberglass.response.HttpTextResponse;
-import de.twometer.fiberglass.response.IResponse;
+import de.twometer.fiberglass.response.*;
 import de.twometer.fiberglass.routing.RouteMatcher;
 import de.twometer.fiberglass.routing.RouteParser;
 
@@ -56,6 +53,10 @@ public class Controller {
         return new HttpResponse()
                 .setBody(file.getContents())
                 .addHeader("Content-Type", file.getMimeType());
+    }
+
+    protected final IResponse json(Object obj) {
+        return new JsonResponse(obj);
     }
 
 }

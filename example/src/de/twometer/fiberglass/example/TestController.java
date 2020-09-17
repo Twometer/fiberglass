@@ -41,4 +41,14 @@ public class TestController extends Controller {
         return file(fileProvider.getFile("/index.html"));
     }
 
+    @Http(Method.GET)
+    public IResponse jsonTest(@Param("id") String id) {
+        return json(new Test());
+    }
+
+    private static class Test {
+        String hello = "world";
+        String foo = "bar";
+    }
+
 }
