@@ -7,8 +7,10 @@ import de.twometer.fiberglass.hosting.base.IHost;
 import de.twometer.fiberglass.hosting.impl.ControllerHost;
 import de.twometer.fiberglass.hosting.impl.FallbackHost;
 import de.twometer.fiberglass.hosting.impl.StaticFileHost;
+import de.twometer.fiberglass.hosting.impl.StaticFileProvider;
 import de.twometer.fiberglass.server.HttpConfig;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,8 @@ public class Fiberglass {
 
     private final HttpConfig httpConfig = new HttpConfig();
 
+    private StaticFileProvider fileProvider;
+
     private HostManager hostManager;
 
     public void addService(Class<?> service) {
@@ -32,15 +36,18 @@ public class Fiberglass {
         hosts.add(new ControllerHost<>(controllerClass));
     }
 
-    public void addStaticFiles() {
-        hosts.add(new StaticFileHost());
+    public void addStaticFiles(String folder, Class<?> resourceOwner) throws IOException {
+        var fileProvider = new StaticFileProvider(folder, resourceOwner.getClassLoader());
+        fileProvider.scan();
+        hosts.add(new StaticFileHost(fileProvider));
+        serviceProvider.registerServiceInstance(fileProvider);
     }
 
     public HttpConfig getHttpConfig() {
         return httpConfig;
     }
 
-    public void start() {
+    public void start() throws IOException {
         if (hostManager == null) {
             addFallbackHost();
 

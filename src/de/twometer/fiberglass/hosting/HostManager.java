@@ -27,17 +27,13 @@ public class HostManager implements HttpCallback {
         this.instanceProvider = instanceProvider;
     }
 
-    public void start() {
+    public void start() throws IOException {
         for (var host : hosts)
             host.initialize(instanceProvider);
 
-        try {
-            httpServer = new HttpServer(httpConfig);
-            httpServer.setCallback(this);
-            httpServer.start();
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to start host manager", e);
-        }
+        httpServer = new HttpServer(httpConfig);
+        httpServer.setCallback(this);
+        httpServer.start();
     }
 
     public void stop() {

@@ -9,7 +9,7 @@ public class RouteParser {
     public static RouteMatcher parse(Controller controller) {
         var route = getRoute(controller);
         var parts = StringUtil.split(route, '/', true);
-        var matcher = new RouteMatcher();
+        var matcher = new RouteMatcher(route);
 
         for (var part : parts) {
             if (part.startsWith("{") && part.endsWith("}")) {

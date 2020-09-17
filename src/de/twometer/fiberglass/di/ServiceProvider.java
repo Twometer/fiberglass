@@ -7,7 +7,14 @@ import java.util.Map;
 
 public class ServiceProvider {
 
-    private Map<Class<?>, Object> services = new HashMap<>();
+    private final Map<Class<?>, Object> services = new HashMap<>();
+
+    public void registerServiceInstance(Object service) {
+        if (hasService(service.getClass()))
+            throw new IllegalArgumentException("Cannot add service " + service.getClass().getName() + " twice.");
+
+        services.put(service.getClass(), service);
+    }
 
     public void registerService(Class<?> serviceClass) {
         if (hasService(serviceClass))

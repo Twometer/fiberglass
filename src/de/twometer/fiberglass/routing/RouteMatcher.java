@@ -7,7 +7,13 @@ import java.util.List;
 
 public class RouteMatcher {
 
+    private final String route;
+
     private final List<RoutePart> routeParts = new ArrayList<>();
+
+    public RouteMatcher(String route) {
+        this.route = route;
+    }
 
     public void addPart(RoutePart part) {
         routeParts.add(part);
@@ -35,6 +41,10 @@ public class RouteMatcher {
 
     public boolean matches(String candidate) {
         var parts = StringUtil.split(candidate, '/', true);
+
+        if (parts.length == 0) {
+            return candidate.equalsIgnoreCase(route);
+        }
 
         for (int i = 0; i < routeParts.size(); i++) {
             var part = parts[i];
