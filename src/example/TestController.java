@@ -1,12 +1,15 @@
 package example;
 
 import de.twometer.fiberglass.api.Controller;
+import de.twometer.fiberglass.api.annotation.Http;
+import de.twometer.fiberglass.api.annotation.Index;
+import de.twometer.fiberglass.api.annotation.Param;
 import de.twometer.fiberglass.api.annotation.Route;
-import de.twometer.fiberglass.api.annotation.http.Get;
+import de.twometer.fiberglass.http.Method;
 import de.twometer.fiberglass.response.HttpTextResponse;
 import de.twometer.fiberglass.response.IResponse;
 
-@Route("/edit/{id}")
+@Route("/book/{id}")
 public class TestController extends Controller {
 
     private final DatabaseService databaseService;
@@ -15,15 +18,16 @@ public class TestController extends Controller {
         this.databaseService = databaseService;
     }
 
-    @Get
-    public IResponse get(String id) {
+    @Index
+    @Http(Method.GET)
+    public IResponse get(@Param("id") String id) {
         databaseService.test();
-        return new HttpTextResponse().setTextBody("hello :3");
+        return new HttpTextResponse().setTextBody("hello :3 id=" + id);
     }
 
-    @Get
-    public IResponse get(String id, String action) {
-        return null;
+    @Http(Method.GET)
+    public IResponse get(@Param("id") int id, @Param("action") String action) {
+        return new HttpTextResponse().setTextBody("penis. " + id + " " + action);
     }
 
 }

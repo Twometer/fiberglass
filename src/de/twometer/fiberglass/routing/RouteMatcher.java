@@ -3,9 +3,7 @@ package de.twometer.fiberglass.routing;
 import de.twometer.fiberglass.util.StringUtil;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class RouteMatcher {
 
@@ -15,16 +13,21 @@ public class RouteMatcher {
         routeParts.add(part);
     }
 
-    public Map<String, String> getPathParameters(String route) {
-        var result = new HashMap<String, String>();
+    public ParsedRequestRoute parseRoute(String route) {
+        var result = new ParsedRequestRoute();
         var parts = StringUtil.split(route, '/', true);
 
         for (int i = 0; i < parts.length; i++) {
             var part = parts[i];
-            var refPart = routeParts.get(i);
 
-            if (refPart.getType() == RoutePart.Type.Variable)
-                result.put(refPart.getValue(), StringUtil.urlDecode(part));
+            if (i < routeParts.size()) {
+                var refPart = routeParts.get(i);
+
+                if (refPart.getType() == RoutePart.Type.Variable)
+                    result.getPathParameters().put(refPart.getValue(), StringUtil.urlDecode(part));
+            } else {
+                result.setAction(part);
+            }
         }
 
         return result;
@@ -32,10 +35,8 @@ public class RouteMatcher {
 
     public boolean matches(String candidate) {
         var parts = StringUtil.split(candidate, '/', true);
-        if (parts.length != routeParts.size())
-            return false;
 
-        for (int i = 0; i < parts.length; i++) {
+        for (int i = 0; i < routeParts.size(); i++) {
             var part = parts[i];
             var refPart = routeParts.get(i);
 

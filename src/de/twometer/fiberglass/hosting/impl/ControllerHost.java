@@ -12,6 +12,8 @@ public class ControllerHost<T extends Controller> implements IHost {
 
     private Controller controller;
 
+    private ControllerInvoker invoker;
+
     public ControllerHost(Class<T> controllerClass) {
         this.controllerClass = controllerClass;
     }
@@ -19,18 +21,19 @@ public class ControllerHost<T extends Controller> implements IHost {
     @Override
     public void initialize(InstanceProvider instanceProvider) {
         controller = instanceProvider.createInstance(controllerClass);
+        invoker = new ControllerInvoker(controllerClass, controller);
     }
 
     @Override
     public boolean match(String requestUri) {
-        return controller.getRouteMatcher().matches(requestUri);
+        return invoker.getController().getRouteMatcher().matches(requestUri);
     }
 
     @Override
     public IResponse serve(HttpRequest request) {
-        var pathParams = controller.getRouteMatcher().getPathParameters(request.getRequestUri());
-
-
-        return null;
+        var parsedRoute = controller.getRouteMatcher().parseRoute(request.getRequestUri());
+        return invoker.invoke(new ControllerRequestContext(request, parsedRoute));
     }
+
+
 }
