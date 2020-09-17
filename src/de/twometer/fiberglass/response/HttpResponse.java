@@ -13,7 +13,7 @@ public class HttpResponse implements IResponse {
 
     private final List<Header> headers = new ArrayList<>();
     private final List<Cookie> cookies = new ArrayList<>();
-    private StatusCode statusCode;
+    private StatusCode statusCode = StatusCode.OK;
     private byte[] body;
 
     @Override

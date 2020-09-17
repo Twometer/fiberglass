@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class HttpRequest implements IRequest {
+public class HttpRequest {
 
     private final List<Header> headers = new ArrayList<>();
     private final List<Cookie> cookies = new ArrayList<>();
@@ -20,7 +20,6 @@ public class HttpRequest implements IRequest {
     private String requestUri;
     private byte[] body;
 
-    @Override
     public void read(InputStream inputStream) throws IOException {
         var decoder = new HttpDecoder(this);
         decoder.decodeRequest(inputStream);

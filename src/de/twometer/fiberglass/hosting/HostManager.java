@@ -3,7 +3,6 @@ package de.twometer.fiberglass.hosting;
 import de.twometer.fiberglass.di.InstanceProvider;
 import de.twometer.fiberglass.hosting.base.IHost;
 import de.twometer.fiberglass.request.HttpRequest;
-import de.twometer.fiberglass.request.IRequest;
 import de.twometer.fiberglass.response.IResponse;
 import de.twometer.fiberglass.server.HttpCallback;
 import de.twometer.fiberglass.server.HttpConfig;
@@ -50,11 +49,9 @@ public class HostManager implements HttpCallback {
     }
 
     @Override
-    public IResponse handleRequest(IRequest request) {
-        var httpRequest = (HttpRequest) request;
-
+    public IResponse handleRequest(HttpRequest request) {
         for (var host : hosts) {
-            if (host.match(httpRequest.getRequestUri()))
+            if (host.match(request.getRequestUri()))
                 return host.serve(request);
         }
 
