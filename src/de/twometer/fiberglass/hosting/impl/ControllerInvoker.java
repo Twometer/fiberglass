@@ -106,7 +106,7 @@ public class ControllerInvoker {
         return true;
     }
 
-    private boolean methodNameMatches(boolean isDefault, String action, String methodName) {
-        return (isDefault && action == null) || (!isDefault && action.equalsIgnoreCase(methodName));
+    private boolean methodNameMatches(boolean isIndex, String action, String methodName) {
+        return (isIndex && action == null) || (!isIndex && methodName.equalsIgnoreCase(action));
     }
 }
