@@ -2,6 +2,7 @@ package de.twometer.fiberglass.hosting;
 
 import de.twometer.fiberglass.di.InstanceProvider;
 import de.twometer.fiberglass.hosting.base.IHost;
+import de.twometer.fiberglass.request.HttpRequest;
 import de.twometer.fiberglass.request.IRequest;
 import de.twometer.fiberglass.response.IResponse;
 import de.twometer.fiberglass.server.HttpCallback;
@@ -50,6 +51,13 @@ public class HostManager implements HttpCallback {
 
     @Override
     public IResponse handleRequest(IRequest request) {
-        return null;
+        var httpRequest = (HttpRequest) request;
+
+        for (var host : hosts) {
+            if (host.match(httpRequest.getRequestUri()))
+                return host.serve(request);
+        }
+
+        throw new IllegalStateException("No host matched the request. Fallback host not registered?");
     }
 }

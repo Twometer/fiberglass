@@ -22,6 +22,7 @@ public class HttpEncoder {
         writeHeader(writer, "Content-Length", String.valueOf(response.getBody().length));
 
         writer.println();
+        writer.flush();
         outputStream.write(response.getBody());
     }
 
