@@ -1,8 +1,8 @@
 package de.twometer.fiberglass.server;
 
-import de.twometer.fiberglass.request.IRequest;
+import de.twometer.fiberglass.request.HttpRequest;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
@@ -54,46 +54,16 @@ public class HttpServer {
             var inputStream = socket.getInputStream();
             var outputStream = socket.getOutputStream();
 
-            var writer = new PrintWriter(new OutputStreamWriter(outputStream));
-            var reader = new BufferedReader(new InputStreamReader(inputStream));
+            var request = new HttpRequest();
+            request.read(inputStream);
 
-            var request = parseRequest(reader);
             var response = callback.handleRequest(request);
             response.write(outputStream);
+
             outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private IRequest parseRequest(BufferedReader reader) throws IOException {
-        var firstLine = true;
-
-        String line;
-        while ((line = reader.readLine()) != null) {
-            /*if (line.isEmpty())
-                break;
-
-            if (firstLine) {
-                firstLine = false;
-                var parts = line.split(" ");
-                if (parts[0].equals("GET") && parts[2].equals("HTTP/1.1")) {
-                    System.out.println("Requesting: " + parts[1]);
-
-                    var reply = "Currently requesting '" + parts[1] + "'";
-
-                    writer.println("HTTP/1.1 200 OK");
-                    writer.println("Content-Length: " + reply.length());
-                    writer.println();
-                    writer.println(reply);
-                    writer.flush();
-                }
-            } else {
-                System.out.println("HEADER: " + line);
-            }
-*/
-        }
-        return null;
     }
 
     public void setCallback(HttpCallback callback) {
