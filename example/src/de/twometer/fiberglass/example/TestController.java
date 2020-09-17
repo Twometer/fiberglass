@@ -1,4 +1,4 @@
-package example;
+package de.twometer.fiberglass.example;
 
 import de.twometer.fiberglass.api.Controller;
 import de.twometer.fiberglass.api.annotation.Http;

@@ -1,4 +1,4 @@
-package example;
+package de.twometer.fiberglass.example;
 
 public class DatabaseService {
 
