@@ -8,13 +8,13 @@ import java.util.Map;
 
 public class StaticFileProvider {
 
-    private final String folder;
+    private String folder;
 
-    private final ClassLoader loader;
+    private ClassLoader loader;
 
     private final Map<String, StaticFile> fileMap = new HashMap<>();
 
-    public StaticFileProvider(String folder, ClassLoader loader) {
+    public void initialize(String folder, ClassLoader loader) {
         this.folder = folder;
         this.loader = loader;
     }

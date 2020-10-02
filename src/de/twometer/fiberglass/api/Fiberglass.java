@@ -1,6 +1,7 @@
 package de.twometer.fiberglass.api;
 
 import de.twometer.fiberglass.di.InstanceProvider;
+import de.twometer.fiberglass.di.ServiceBuilder;
 import de.twometer.fiberglass.di.ServiceProvider;
 import de.twometer.fiberglass.hosting.HostManager;
 import de.twometer.fiberglass.hosting.base.IHost;
@@ -19,33 +20,32 @@ public class Fiberglass {
 
     private final List<IHost> hosts = new ArrayList<>();
 
-    private final ServiceProvider serviceProvider = new ServiceProvider();
-
-    private final InstanceProvider instanceProvider = new InstanceProvider(serviceProvider);
+    private final ServiceProvider services = new ServiceProvider();
 
     private final HttpConfig httpConfig = new HttpConfig();
 
-    private StaticFileProvider fileProvider;
-
     private HostManager hostManager;
 
-    public void addService(Class<?> service) {
-        serviceProvider.registerService(service);
+    public <T> ServiceBuilder<T> addService(Class<T> service) {
+        return services.register(service);
     }
 
     public void addController(Class<? extends Controller> controllerClass) {
         hosts.add(new ControllerHost<>(controllerClass));
     }
 
-    public void addStaticFiles(String folder, Class<?> resourceOwner) throws IOException {
-        var fileProvider = new StaticFileProvider(folder, resourceOwner.getClassLoader());
-        fileProvider.scan();
-        hosts.add(new StaticFileHost(fileProvider));
-        serviceProvider.registerServiceInstance(fileProvider);
+    public void addStaticFiles(String folder, Class<?> resourceOwner) {
+        var host = new StaticFileHost();
+
+        addService(StaticFileProvider.class)
+                .configure(p -> p.initialize(folder, resourceOwner.getClassLoader()))
+                .bind(host::setFileProvider);
+
+        hosts.add(host);
     }
 
     public void addPhotonPages() {
-        serviceProvider.registerService(PhotonPageService.class);
+        addService(PhotonPageService.class);
     }
 
     public HttpConfig getHttpConfig() {
@@ -55,6 +55,8 @@ public class Fiberglass {
     public void start() throws IOException {
         if (hostManager == null) {
             addFallbackHost();
+
+            InstanceProvider instanceProvider = InstanceProvider.create(services);
 
             hostManager = new HostManager(hosts, httpConfig, instanceProvider);
             hostManager.start();

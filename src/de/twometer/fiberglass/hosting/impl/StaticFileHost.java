@@ -8,16 +8,11 @@ import de.twometer.fiberglass.response.ErrorResponse;
 import de.twometer.fiberglass.response.HttpResponse;
 import de.twometer.fiberglass.response.IResponse;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class StaticFileHost implements IHost {
 
-    private final StaticFileProvider fileProvider;
-
-    public StaticFileHost(StaticFileProvider fileProvider) {
-        this.fileProvider = fileProvider;
-    }
+    private StaticFileProvider fileProvider;
 
     @Override
     public void initialize(InstanceProvider instanceProvider) throws IOException {
@@ -41,7 +36,11 @@ public class StaticFileHost implements IHost {
                 .setBody(file.getContents());
     }
 
-    private StaticFile findFile(String path) throws FileNotFoundException {
+    public void setFileProvider(StaticFileProvider fileProvider) {
+        this.fileProvider = fileProvider;
+    }
+
+    private StaticFile findFile(String path) {
         String fileWithIndex = path + (path.endsWith("/") ? "" : '/') + "index.html";
         var file = fileProvider.getFileMap().get(path);
         if (file == null)

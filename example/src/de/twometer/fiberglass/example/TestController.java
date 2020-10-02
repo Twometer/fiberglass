@@ -5,6 +5,7 @@ import de.twometer.fiberglass.api.annotation.Http;
 import de.twometer.fiberglass.api.annotation.Index;
 import de.twometer.fiberglass.api.annotation.Param;
 import de.twometer.fiberglass.api.annotation.Route;
+import de.twometer.fiberglass.di.Inject;
 import de.twometer.fiberglass.hosting.impl.StaticFileProvider;
 import de.twometer.fiberglass.http.Method;
 import de.twometer.fiberglass.http.StatusCode;
@@ -16,17 +17,14 @@ import java.io.IOException;
 @Route("/book/{id}")
 public class TestController extends Controller {
 
-    private final PhotonPageService photon;
+    @Inject
+    private PhotonPageService photon;
 
-    private final StaticFileProvider fileProvider;
+    @Inject
+    private StaticFileProvider fileProvider;
 
-    private final DatabaseService databaseService;
-
-    public TestController(PhotonPageService photon, StaticFileProvider fileProvider, DatabaseService databaseService) {
-        this.photon = photon;
-        this.fileProvider = fileProvider;
-        this.databaseService = databaseService;
-    }
+    @Inject
+    private DatabaseService databaseService;
 
     @Index
     @Http(Method.GET)

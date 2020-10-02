@@ -1,47 +1,43 @@
 package de.twometer.fiberglass.di;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ServiceProvider {
 
-    private final Map<Class<?>, Object> services = new HashMap<>();
+    private final Map<Class<?>, ServiceBuilder<?>> serviceBuilders = new HashMap<>();
 
-    public void registerServiceInstance(Object service) {
-        if (hasService(service.getClass()))
-            throw new IllegalArgumentException("Cannot add service " + service.getClass().getName() + " twice.");
-
-        services.put(service.getClass(), service);
-    }
-
-    public void registerService(Class<?> serviceClass) {
-        if (hasService(serviceClass))
+    public <T> ServiceBuilder<T> register(Class<T> serviceClass) {
+        if (serviceBuilders.containsKey(serviceClass))
             throw new IllegalArgumentException("Cannot add service " + serviceClass.getName() + " twice.");
 
-        Constructor<?>[] constructors = serviceClass.getDeclaredConstructors();
-        if (constructors.length == 0)
-            throw new IllegalArgumentException("The service " + serviceClass.getName() + " does not have an available constructor.");
-
-        instantiateAndAdd(serviceClass, constructors[0]);
+        ServiceBuilder<T> builder = new ServiceBuilder<>(serviceClass);
+        serviceBuilders.put(serviceClass, builder);
+        return builder;
     }
 
-    private void instantiateAndAdd(Class<?> serviceClass, Constructor<?> constructor) {
-        try {
-            Object obj = constructor.newInstance();
-            services.put(serviceClass, obj);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Failed to instantiate service " + serviceClass.getName(), e);
+    void createInstances() {
+        for (var entry : serviceBuilders.entrySet()) {
+            try {
+                entry.getValue().createInstance();
+            } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public Object getService(Class<?> service) {
-        return services.get(service);
+    Map<Class<?>, ServiceBuilder<?>> getServiceBuilders() {
+        return serviceBuilders;
     }
 
-    public boolean hasService(Class<?> service) {
-        return services.containsKey(service);
+    boolean hasService(Class<?> serviceClass) {
+        return serviceBuilders.containsKey(serviceClass);
     }
+
+    Object getService(Class<?> serviceClass) {
+        return serviceBuilders.get(serviceClass).getInstance();
+    }
+
 
 }
