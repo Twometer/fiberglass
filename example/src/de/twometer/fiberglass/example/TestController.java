@@ -10,6 +10,7 @@ import de.twometer.fiberglass.hosting.impl.StaticFileProvider;
 import de.twometer.fiberglass.http.Method;
 import de.twometer.fiberglass.http.StatusCode;
 import de.twometer.fiberglass.photon.PhotonPageService;
+import de.twometer.fiberglass.request.HttpRequest;
 import de.twometer.fiberglass.response.IResponse;
 
 import java.io.IOException;
@@ -28,9 +29,9 @@ public class TestController extends Controller {
 
     @Index
     @Http(Method.GET)
-    public IResponse get(@Param("id") String id) {
+    public IResponse get(HttpRequest request, @Param("id") String id) {
         databaseService.test();
-        return text("hello :3 id=" + id);
+        return text("hello :3 id=" + id + ", user-agent: " + request.getHeader("User-Agent"));
     }
 
     @Http(Method.GET)

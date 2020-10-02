@@ -5,6 +5,7 @@ import de.twometer.fiberglass.api.annotation.Http;
 import de.twometer.fiberglass.api.annotation.Index;
 import de.twometer.fiberglass.api.annotation.Param;
 import de.twometer.fiberglass.http.StatusCode;
+import de.twometer.fiberglass.request.HttpRequest;
 import de.twometer.fiberglass.response.ErrorResponse;
 import de.twometer.fiberglass.response.IResponse;
 import de.twometer.fiberglass.response.ResponseFactory;
@@ -63,6 +64,12 @@ public class ControllerInvoker {
         var parameterValues = new Object[method.getParameterCount()];
         for (int i = 0; i < parameters.length; i++) {
             var parameter = parameters[i];
+
+            if (parameter.getType() == HttpRequest.class) {
+                parameterValues[i] = context.getRequest();
+                continue;
+            }
+
             var parameterValue = findParameterValue(context, parameter);
             parameterValues[i] = TypeConverter.convertType(parameter.getType(), parameterValue);
         }

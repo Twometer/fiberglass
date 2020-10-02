@@ -77,8 +77,8 @@ public class HttpDecoder {
     }
 
     private void parseRequestHeader(String line) {
-        var key = line.substring(0, line.indexOf(":") + 1);
-        var val = line.substring(key.length()).trim();
+        var key = line.substring(0, line.indexOf(":"));
+        var val = line.substring(key.length() + 1).trim();
 
         if (key.equalsIgnoreCase("cookie")) {
             if (val.contains(":")) {
