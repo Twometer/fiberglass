@@ -120,10 +120,11 @@ public class PhotonCompiler {
     private String createUniqueClassName(StaticFile file) {
         var builder = new StringBuilder();
         builder.append("PhGen_");
-        for (char c : file.getName().toCharArray()) {
+        for (char c : file.getPath().toCharArray()) {
             if (Character.isLetterOrDigit(c))
                 builder.append(c);
         }
+        builder.append(System.currentTimeMillis());
         return builder.toString();
     }
 
